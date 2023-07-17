@@ -23,7 +23,7 @@ Usuario leerUsuario(const string& numeroCuenta) {
 
     if (archivo.is_open()) {
         string cuenta, pin, saldo, bloqueada, nombreUsuario;
-        while (getline(archivo, cuenta, ',') &&
+        while (getline(archivo, cuenta, '') &&
                getline(archivo, pin, ',') &&
                getline(archivo, saldo, ',') &&
                getline(archivo, bloqueada, ',') &&
