@@ -98,6 +98,18 @@ void depositarDinero(Usuario& usuario, double monto) {
     guardarUsuario(usuario);
 }
 
+// Cambiar pin de seguridad
+
+void cambiarPin(Usuario& usuario, string& pinCambiado) {
+    if(pinCambiado.length() == 4){
+    usuario.PIN = pinCambiado;
+    cout << "Su pin a cambiado exitosamente";
+    guardarUsuario(usuario);
+    } else {
+        cout << "Su pin debe tener unicamente 4 digitos";
+    }
+}
+
 // Función para retirar dinero de la cuenta
 void retirarDinero(Usuario& usuario, double monto) {
     if (monto <= usuario.saldoActual) {
@@ -174,33 +186,55 @@ int main() {
         cout << "Bienvenido: " << usuario.nombreUsuario << "\n\n";
         cout << "=== Menú ===" << endl;
         cout << "1. Consultar saldoActual" << endl;
-        cout << "2. Depositar dinero" << endl;
-        cout << "3. Retirar dinero" << endl;
-        cout << "4. Transferir dinero" << endl;
-        cout << "5. Salir" << endl;
+        cout << "2. Cambiar PIN de seguridad" << endl; 
+        cout << "3. Depositar dinero" << endl;
+        cout << "4. Retirar dinero" << endl;
+        cout << "5. Transferir dinero" << endl;
+        cout << "6. Salir" << endl;
 
         cout << "Ingrese la opción deseada: ";
         cin >> opcion;
 
         string numCuentaDestino;
+        string pinCambiado;
 
+       while (opcion != 6)
+       {
+      
         switch (opcion) {
             case 1:
                 consultarsaldoActual(usuario);
                 break;
-            case 2:
+            case 2: 
+                int opcionCaseDos;
+              
+
+                cout << "¿Seguro desea cambiar su pin de seguridad? \n";
+                cout << "introduzca 1 para cambiarlo o cualquier otro numero para CANCELAR \n";
+                cin >> opcionCaseDos;
+               
+                if(opcionCaseDos == 1){
+                     cout << "Ingrese el nuevo pin: ";
+                     cin >> pinCambiado;
+                     cambiarPin(usuario, pinCambiado);  
+                } else {
+                      cout << "Cancelando opcion... \n";
+                      return 0;
+                } 
+              break;
+            case 3:
                 double montoDeposito;
                 cout << "Ingrese el monto a depositar: $";
                 cin >> montoDeposito;
                 depositarDinero(usuario, montoDeposito);
                 break;
-            case 3:
+            case 4:
                 double montoRetiro;
                 cout << "Ingrese el monto a retirar: $";
                 cin >> montoRetiro;
                 retirarDinero(usuario, montoRetiro);
                 break;
-            case 4:
+            case 5:
                 
                 double montoTransferencia;
                 cout << "Ingrese el número de cuenta destino: ";
@@ -209,7 +243,7 @@ int main() {
                 cin >> montoTransferencia;
                 transferirDinero(usuario, numCuentaDestino, montoTransferencia);
                 break;
-            case 5:
+            case 6:
                 // Salir del programa
                 cout << "Gracias por utilizar nuestro cajero automático. ¡Hasta luego!" << endl;
                 return 0;
@@ -218,6 +252,7 @@ int main() {
                 cout << "Opción inválida. Por favor, seleccione una opción válida." << endl;
                 break;
         }
+         }
     } else {
         cout << "Número de cuenta inválido." << endl;
     }
