@@ -6,32 +6,32 @@
 using namespace std;
 
 struct Usuario {
-    string numeroCuenta;
+    string numCuenta;
     string PIN;
-    double saldo;
-    bool bloqueada;
+    double saldoActual;
+    bool tarjetaBloqueada;
     string nombreUsuario;
 };
 
 
 // Función para leer los datos de un usuario desde un archivo CSV
-Usuario leerUsuario(const string& numeroCuenta) {
+Usuario identificarUsuario(const string& numCuenta) {
     ifstream archivo("usuarios.csv");
     Usuario usuario;
-    usuario.numeroCuenta = numeroCuenta;
-    usuario.bloqueada = false;
+    usuario.numCuenta = numCuenta;
+    usuario.tarjetaBloqueada = false;
 
     if (archivo.is_open()) {
-        string cuenta, pin, saldo, bloqueada, nombreUsuario;
+        string cuenta, pin, saldoActual, tarjetaBloqueada, nombreUsuario;
         while (getline(archivo, cuenta, ',') &&
                getline(archivo, pin, ',') &&
-               getline(archivo, saldo, ',') &&
-               getline(archivo, bloqueada, ',') &&
+               getline(archivo, saldoActual, ',') &&
+               getline(archivo, tarjetaBloqueada, ',') &&
                getline(archivo, nombreUsuario)) {
-            if (cuenta == numeroCuenta) {
+            if (cuenta == numCuenta) {
                 usuario.PIN = pin;
-                usuario.saldo = stod(saldo);
-                usuario.bloqueada = (bloqueada == "1");
+                usuario.saldoActual = stod(saldoActual);
+                usuario.tarjetaBloqueada = (tarjetaBloqueada == "1");
                 usuario.nombreUsuario = nombreUsuario;
                 break;
             }
@@ -48,23 +48,23 @@ void guardarUsuario(const Usuario& usuario) {
     ofstream archivoSalida("temp.csv");
 
     if (archivoEntrada.is_open() && archivoSalida.is_open()) {
-        string cuenta, pin, saldo, bloqueada, nombreUsuario;
+        string cuenta, pin, saldoActual, tarjetaBloqueada, nombreUsuario;
         while (getline(archivoEntrada, cuenta, ',') &&
                getline(archivoEntrada, pin, ',') &&
-               getline(archivoEntrada, saldo, ',') &&
-               getline(archivoEntrada, bloqueada, ',') &&
+               getline(archivoEntrada, saldoActual, ',') &&
+               getline(archivoEntrada, tarjetaBloqueada, ',') &&
                getline(archivoEntrada, nombreUsuario)) {
-            if (cuenta == usuario.numeroCuenta) {
-                archivoSalida << usuario.numeroCuenta << ","
+            if (cuenta == usuario.numCuenta) {
+                archivoSalida << usuario.numCuenta << ","
                               << usuario.PIN << ","
-                              << usuario.saldo << ","
-                              << (usuario.bloqueada ? "1" : "0") << ","
+                              << usuario.saldoActual << ","
+                              << (usuario.tarjetaBloqueada ? "1" : "0") << ","
                               << usuario.nombreUsuario << endl;
             } else {
                 archivoSalida << cuenta << ","
                               << pin << ","
-                              << saldo << ","
-                              << bloqueada << ","
+                              << saldoActual << ","
+                              << tarjetaBloqueada << ","
                               << nombreUsuario << endl;
             }
         }
@@ -85,71 +85,71 @@ bool verificarPIN(const Usuario& usuario, const string& PIN) {
     }
 }
 
-// Función para consultar el saldo de la cuenta
-void consultarSaldo(const Usuario& usuario) {
-    cout << "Saldo actual: $" << usuario.saldo << endl;
+// Función para consultar el saldoActual de la cuenta
+void consultarsaldoActual(const Usuario& usuario) {
+    cout << "saldoActual actual: $" << usuario.saldoActual << endl;
 }
 
 // Función para depositar dinero en la cuenta
 void depositarDinero(Usuario& usuario, double monto) {
-    usuario.saldo += monto;
+    usuario.saldoActual += monto;
     cout << "Se ha depositado $" << monto << " en la cuenta." << endl;
-    cout << "Saldo actual: $" << usuario.saldo << endl;
+    cout << "saldoActual actual: $" << usuario.saldoActual << endl;
     guardarUsuario(usuario);
 }
 
 // Función para retirar dinero de la cuenta
 void retirarDinero(Usuario& usuario, double monto) {
-    if (monto <= usuario.saldo) {
-        usuario.saldo -= monto;
+    if (monto <= usuario.saldoActual) {
+        usuario.saldoActual -= monto;
         cout << "Se ha retirado $" << monto << " de la cuenta." << endl;
-        cout << "Saldo actual: $" << usuario.saldo << endl;
+        cout << "saldoActual actual: $" << usuario.saldoActual << endl;
         guardarUsuario(usuario);
     } else {
-        cout << "Saldo insuficiente." << endl;
+        cout << "saldoActual insuficiente." << endl;
     }
 }
 
 // Función para transferir dinero a otra cuenta
-void transferirDinero(Usuario& usuario, const string& numeroCuentaDestino, double monto) {
-    if (monto <= usuario.saldo) {
-        Usuario usuarioDestino = leerUsuario(numeroCuentaDestino);
-        if (usuarioDestino.numeroCuenta == numeroCuentaDestino && !usuarioDestino.bloqueada) {
-            usuario.saldo -= monto;
-            usuarioDestino.saldo += monto;
-            cout << "Se ha transferido $" << monto << " a la cuenta " << numeroCuentaDestino << "." << endl;
-            cout << "Saldo actual: $" << usuario.saldo << endl;
+void transferirDinero(Usuario& usuario, const string& numCuentaDestino, double monto) {
+    if (monto <= usuario.saldoActual) {
+        Usuario usuarioDestino = identificarUsuario(numCuentaDestino);
+        if (usuarioDestino.numCuenta == numCuentaDestino && !usuarioDestino.tarjetaBloqueada) {
+            usuario.saldoActual -= monto;
+            usuarioDestino.saldoActual += monto;
+            cout << "Se ha transferido $" << monto << " a la cuenta " << numCuentaDestino << "." << endl;
+            cout << "saldoActual actual: $" << usuario.saldoActual << endl;
             guardarUsuario(usuario);
             guardarUsuario(usuarioDestino);
         } else {
-            cout << "La cuenta destino no existe o está bloqueada." << endl;
+            cout << "La cuenta destino no existe o está tarjetaBloqueada." << endl;
         }
     } else {
-        cout << "Saldo insuficiente." << endl;
+        cout << "saldoActual insuficiente." << endl;
     }
 }
 
 // Función para bloquear la tarjeta del usuario
 void bloquearTarjeta(Usuario& usuario) {
-    usuario.bloqueada = true;
+    usuario.tarjetaBloqueada = true;
     guardarUsuario(usuario);
     cout << "Tarjeta bloqueada. Comuníquese con su banco para desbloquearla." << endl;
 }
 
 int main() {
-    string numeroCuenta;
+    string numCuenta;
     string PIN;
     int opcion;
 
     cout << "=== Bienvenido al Cajero Automático ===" << endl;
     cout << "Ingrese su número de cuenta: ";
-    cin >> numeroCuenta;
+    cin >> numCuenta;
 
-    Usuario usuario = leerUsuario(numeroCuenta);
+    Usuario usuario = identificarUsuario(numCuenta);
 
-    if (usuario.numeroCuenta == numeroCuenta) {
-        if (usuario.bloqueada) {
-            cout << "La tarjeta está bloqueada. Comuníquese con su banco para desbloquearla." << endl;
+    if (usuario.numCuenta == numCuenta) {
+        if (usuario.tarjetaBloqueada) {
+            cout << "La tarjeta esta bloqueada. Comuníquese con su banco para desbloquearla." << endl;
             return 0;
         }
 
@@ -173,7 +173,7 @@ int main() {
 
         cout << "Bienvenido: " << usuario.nombreUsuario << "\n\n";
         cout << "=== Menú ===" << endl;
-        cout << "1. Consultar saldo" << endl;
+        cout << "1. Consultar saldoActual" << endl;
         cout << "2. Depositar dinero" << endl;
         cout << "3. Retirar dinero" << endl;
         cout << "4. Transferir dinero" << endl;
@@ -182,11 +182,11 @@ int main() {
         cout << "Ingrese la opción deseada: ";
         cin >> opcion;
 
-        string numeroCuentaDestino;
+        string numCuentaDestino;
 
         switch (opcion) {
             case 1:
-                consultarSaldo(usuario);
+                consultarsaldoActual(usuario);
                 break;
             case 2:
                 double montoDeposito;
@@ -204,10 +204,10 @@ int main() {
                 
                 double montoTransferencia;
                 cout << "Ingrese el número de cuenta destino: ";
-                cin >> numeroCuentaDestino;
+                cin >> numCuentaDestino;
                 cout << "Ingrese el monto a transferir: $";
                 cin >> montoTransferencia;
-                transferirDinero(usuario, numeroCuentaDestino, montoTransferencia);
+                transferirDinero(usuario, numCuentaDestino, montoTransferencia);
                 break;
             case 5:
                 // Salir del programa
