@@ -12,7 +12,136 @@ struct Usuario {
     bool tarjetaBloqueada;
     string nombreUsuario;
 };
+// Prototipos:
+Usuario identificarUsuario(const string& numCuenta);
+void guardarUsuario(const Usuario& usuario);
+bool verificarPIN(const Usuario& usuario, const string& PIN);
+void consultarsaldoActual(const Usuario& usuario);
+void transferirDinero(Usuario& usuario, const string& numCuentaDestino, double monto);
+void depositarDinero(Usuario& usuario, double monto);
+void cambiarPin(Usuario& usuario, string& pinCambiado);
+void retirarDinero(Usuario& usuario, double monto);
+void bloquearTarjeta(Usuario& usuario);
+void menuSeleccion(const Usuario& usuario, int& opcion);
 
+int main() {
+    string numCuenta;
+    string PIN;
+
+    cout << "Bienvenido al Cajero Automatico" << endl;
+    cout << "Ingrese su número de cuenta: \n";
+    cin >> numCuenta;
+
+    Usuario usuario = identificarUsuario(numCuenta);
+
+    if (usuario.numCuenta == numCuenta) {
+        if (usuario.tarjetaBloqueada) {
+            cout << "La tarjeta esta bloqueada. Comuníquese con su banco para desbloquearla. \n" << endl;
+            return 0;
+        }
+
+        int intentos = 0;
+        bool PINCorrecto = false;
+        while (intentos < 3 && !PINCorrecto) {
+            cout << "Ingrese su PIN: ";
+            cin >> PIN;
+            PINCorrecto = verificarPIN(usuario, PIN);
+            if (!PINCorrecto) {
+                intentos++;
+                if (intentos < 3) {
+                    cout << "Le quedan " << 3 - intentos << " intentos. \n";
+                } else {
+                    bloquearTarjeta(usuario);
+                    return 0;
+                }
+            }
+        }
+
+
+      
+        string numCuentaDestino;
+        string pinCambiado;
+        int opcion;
+
+        cout << "Bienvenido: " << usuario.nombreUsuario << "\n";
+        menuSeleccion(opcion);
+
+       while (opcion != 6)
+       {
+      
+        switch (opcion) {
+            case 1:
+                consultarsaldoActual(usuario);
+                break;
+            case 2: 
+                int opcionCaseDos;
+              
+
+                cout << "¿Seguro desea cambiar su pin de seguridad? \n";
+                cout << "introduzca 1 para cambiarlo o cualquier otro numero para CANCELAR \n";
+                cin >> opcionCaseDos;
+               
+                if(opcionCaseDos == 1){
+                     cout << "Ingrese el nuevo pin: ";
+                     cin >> pinCambiado;
+                     cambiarPin(usuario, pinCambiado);  
+                } else {
+                      cout << "Cancelando opcion... \n";
+                      return 0;
+                } 
+              break;
+            case 3:
+                double montoDeposito;
+                cout << "Ingrese el monto a depositar: $";
+                cin >> montoDeposito;
+                depositarDinero(usuario, montoDeposito);
+                break;
+            case 4:
+                double montoRetiro;
+                cout << "Ingrese el monto a retirar: $";
+                cin >> montoRetiro;
+                retirarDinero(usuario, montoRetiro);
+                break;
+            case 5:
+                
+                double montoTransferencia;
+                cout << "Ingrese el número de cuenta destino: ";
+                cin >> numCuentaDestino;
+                cout << "Ingrese el monto a transferir: $";
+                cin >> montoTransferencia;
+                transferirDinero(usuario, numCuentaDestino, montoTransferencia);
+                break;
+            case 6:
+                // Salir del programa
+                cout << "Saliendo... \n" << endl;
+                return 0;
+                break;
+            default:
+                cout << "Opcion inválida. Por favor, seleccione una opcion valida. \n" << endl;
+                break;
+        }
+          menuSeleccion(usuario, opcion); 
+         }
+    } else {
+        cout << "Número de cuenta inválido \n";
+    }
+  
+    return 0;
+}
+
+void menuSeleccion(int& opcion){
+
+        cout << "--- MENU ---" << endl;
+        cout << "1. Consultar saldoActual" << endl;
+        cout << "2. Cambiar PIN de seguridad" << endl; 
+        cout << "3. Depositar dinero" << endl;
+        cout << "4. Retirar dinero" << endl;
+        cout << "5. Transferir dinero" << endl;
+        cout << "6. Salir" << endl;
+
+        cout << "Ingrese la opción deseada: " << endl;
+        cin >> opcion;
+}
 
 // Función para leer los datos de un usuario desde un archivo CSV
 Usuario identificarUsuario(const string& numCuenta) {
@@ -75,38 +204,35 @@ void guardarUsuario(const Usuario& usuario) {
     }
 }
 
-// Función para verificar el PIN ingresado por el usuario
 bool verificarPIN(const Usuario& usuario, const string& PIN) {
     if (usuario.PIN == PIN) {
         return true;
     } else {
-        cout << "PIN incorrecto." << endl;
+        cout << "PIN de seguridad incorrecto \n" << endl;
         return false;
     }
 }
 
-// Función para consultar el saldoActual de la cuenta
 void consultarsaldoActual(const Usuario& usuario) {
-    cout << "saldoActual actual: $" << usuario.saldoActual << endl;
+    cout << "Saldo actual: $" << usuario.saldoActual << "\n";
 }
 
-// Función para depositar dinero en la cuenta
+
 void depositarDinero(Usuario& usuario, double monto) {
     usuario.saldoActual += monto;
-    cout << "Se ha depositado $" << monto << " en la cuenta." << endl;
-    cout << "saldoActual actual: $" << usuario.saldoActual << endl;
+    cout << "Se ha depositado $" << monto << " en la cuenta \n";
+    cout << "Saldo actualizado: $" << usuario.saldoActual << "\n";
     guardarUsuario(usuario);
 }
 
-// Cambiar pin de seguridad
 
 void cambiarPin(Usuario& usuario, string& pinCambiado) {
     if(pinCambiado.length() == 4){
     usuario.PIN = pinCambiado;
-    cout << "Su pin a cambiado exitosamente";
+    cout << "Su pin a cambiado exitosamente \n";
     guardarUsuario(usuario);
     } else {
-        cout << "Su pin debe tener unicamente 4 digitos";
+        cout << "Su pin debe tener unicamente 4 digitos \n";
     }
 }
 
@@ -114,11 +240,11 @@ void cambiarPin(Usuario& usuario, string& pinCambiado) {
 void retirarDinero(Usuario& usuario, double monto) {
     if (monto <= usuario.saldoActual) {
         usuario.saldoActual -= monto;
-        cout << "Se ha retirado $" << monto << " de la cuenta." << endl;
-        cout << "saldoActual actual: $" << usuario.saldoActual << endl;
+        cout << "Se ha retirado $" << monto << " de la cuenta \n";
+        cout << "Saldo Actualizado: $" << usuario.saldoActual << "\n";
         guardarUsuario(usuario);
     } else {
-        cout << "saldoActual insuficiente." << endl;
+        cout << "Saldo insuficiente \n" << endl;
     }
 }
 
@@ -129,15 +255,15 @@ void transferirDinero(Usuario& usuario, const string& numCuentaDestino, double m
         if (usuarioDestino.numCuenta == numCuentaDestino && !usuarioDestino.tarjetaBloqueada) {
             usuario.saldoActual -= monto;
             usuarioDestino.saldoActual += monto;
-            cout << "Se ha transferido $" << monto << " a la cuenta " << numCuentaDestino << "." << endl;
-            cout << "saldoActual actual: $" << usuario.saldoActual << endl;
+            cout << "Se ha transferido $" << monto << " a la cuenta " << numCuentaDestino << "\n";
+            cout << "saldoActual actual: $" << usuario.saldoActual << "\n";
             guardarUsuario(usuario);
             guardarUsuario(usuarioDestino);
         } else {
-            cout << "La cuenta destino no existe o está tarjetaBloqueada." << endl;
+            cout << "La cuenta de banco ingresada no existe o fue bloqueada. \n" << endl;
         }
     } else {
-        cout << "saldoActual insuficiente." << endl;
+        cout << "Saldo insuficiente" << endl;
     }
 }
 
@@ -145,117 +271,6 @@ void transferirDinero(Usuario& usuario, const string& numCuentaDestino, double m
 void bloquearTarjeta(Usuario& usuario) {
     usuario.tarjetaBloqueada = true;
     guardarUsuario(usuario);
-    cout << "Tarjeta bloqueada. Comuníquese con su banco para desbloquearla." << endl;
+    cout << "Tarjeta bloqueada, comuniquese al numero del banco 0800-232-1030 para desbloquearla. \n" << endl;
 }
 
-int main() {
-    string numCuenta;
-    string PIN;
-    int opcion;
-
-    cout << "=== Bienvenido al Cajero Automático ===" << endl;
-    cout << "Ingrese su número de cuenta: ";
-    cin >> numCuenta;
-
-    Usuario usuario = identificarUsuario(numCuenta);
-
-    if (usuario.numCuenta == numCuenta) {
-        if (usuario.tarjetaBloqueada) {
-            cout << "La tarjeta esta bloqueada. Comuníquese con su banco para desbloquearla." << endl;
-            return 0;
-        }
-
-        int intentos = 0;
-        bool PINCorrecto = false;
-        while (intentos < 3 && !PINCorrecto) {
-            cout << "Ingrese su PIN: ";
-            cin >> PIN;
-            PINCorrecto = verificarPIN(usuario, PIN);
-            if (!PINCorrecto) {
-                intentos++;
-                if (intentos < 3) {
-                    cout << "Le quedan " << 3 - intentos << " intento(s)." << endl;
-                } else {
-                    bloquearTarjeta(usuario);
-                    return 0;
-                }
-            }
-        }
-
-
-        cout << "Bienvenido: " << usuario.nombreUsuario << "\n\n";
-        cout << "=== Menú ===" << endl;
-        cout << "1. Consultar saldoActual" << endl;
-        cout << "2. Cambiar PIN de seguridad" << endl; 
-        cout << "3. Depositar dinero" << endl;
-        cout << "4. Retirar dinero" << endl;
-        cout << "5. Transferir dinero" << endl;
-        cout << "6. Salir" << endl;
-
-        cout << "Ingrese la opción deseada: ";
-        cin >> opcion;
-
-        string numCuentaDestino;
-        string pinCambiado;
-
-       while (opcion != 6)
-       {
-      
-        switch (opcion) {
-            case 1:
-                consultarsaldoActual(usuario);
-                break;
-            case 2: 
-                int opcionCaseDos;
-              
-
-                cout << "¿Seguro desea cambiar su pin de seguridad? \n";
-                cout << "introduzca 1 para cambiarlo o cualquier otro numero para CANCELAR \n";
-                cin >> opcionCaseDos;
-               
-                if(opcionCaseDos == 1){
-                     cout << "Ingrese el nuevo pin: ";
-                     cin >> pinCambiado;
-                     cambiarPin(usuario, pinCambiado);  
-                } else {
-                      cout << "Cancelando opcion... \n";
-                      return 0;
-                } 
-              break;
-            case 3:
-                double montoDeposito;
-                cout << "Ingrese el monto a depositar: $";
-                cin >> montoDeposito;
-                depositarDinero(usuario, montoDeposito);
-                break;
-            case 4:
-                double montoRetiro;
-                cout << "Ingrese el monto a retirar: $";
-                cin >> montoRetiro;
-                retirarDinero(usuario, montoRetiro);
-                break;
-            case 5:
-                
-                double montoTransferencia;
-                cout << "Ingrese el número de cuenta destino: ";
-                cin >> numCuentaDestino;
-                cout << "Ingrese el monto a transferir: $";
-                cin >> montoTransferencia;
-                transferirDinero(usuario, numCuentaDestino, montoTransferencia);
-                break;
-            case 6:
-                // Salir del programa
-                cout << "Gracias por utilizar nuestro cajero automático. ¡Hasta luego!" << endl;
-                return 0;
-                break;
-            default:
-                cout << "Opción inválida. Por favor, seleccione una opción válida." << endl;
-                break;
-        }
-         }
-    } else {
-        cout << "Número de cuenta inválido." << endl;
-    }
-
-    return 0;
-}
