@@ -22,7 +22,7 @@ void depositarDinero(Usuario& usuario, double monto);
 void cambiarPin(Usuario& usuario, string& pinCambiado);
 void retirarDinero(Usuario& usuario, double monto);
 void bloquearTarjeta(Usuario& usuario);
-void menuSeleccion(const Usuario& usuario, int& opcion);
+void menuSeleccion(int& opcion);
 
 int main() {
     string numCuenta;
@@ -120,7 +120,7 @@ int main() {
                 cout << "Opcion inválida. Por favor, seleccione una opcion valida. \n" << endl;
                 break;
         }
-          menuSeleccion(usuario, opcion); 
+          menuSeleccion(opcion); 
          }
     } else {
         cout << "Número de cuenta inválido \n";
