@@ -126,6 +126,11 @@ int main() {
                 descontinuar = true;  
             }
         }
+
+
+          menuSeleccion(opcion); 
+         }
+
     } else {
         cout << "Numero de cuenta invalido" << endl;
     }
