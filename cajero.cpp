@@ -70,7 +70,6 @@ int main()
 
         string pinCambiado;
         int opcion;
-        bool descontinuar = false;
 
         cout << endl;
         cout << "Bienvenido: " << usuario.nombreUsuario << endl;
@@ -78,7 +77,7 @@ int main()
 
         menuSeleccion(opcion);
 
-        while (opcion != 6 && !descontinuar)
+        while (opcion != 6)
         {
             switch (opcion)
             {
@@ -141,11 +140,10 @@ int main()
             else
             {
                 cout << "Muchas gracias por utilizar nuestros cajeros..." << endl;
-                descontinuar = true;
+                return 0;
             }
         }
-
-        menuSeleccion(opcion);
+         menuSeleccion(opcion);
     }
 
 else
@@ -313,12 +311,16 @@ void transferirDinero(Usuario &usuario, double monto)
         {
             cout << "Ingrese el monto a transferir: $";
             cin >> monto;
+            if(monto <= usuario.saldoActual){
             usuario.saldoActual -= monto;
             usuarioDestino.saldoActual += monto;
             cout << "Se ha transferido $" << monto << " a la cuenta " << numCuentaDestino << endl;
             cout << "Saldo actual: $" << usuario.saldoActual << endl;
             guardarUsuario(usuario);
             guardarUsuario(usuarioDestino);
+            } else {
+                cout << "Error, monto insuficiente en su cuenta" << endl;     
+            }
         }
         else
         {
