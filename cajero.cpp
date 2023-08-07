@@ -143,7 +143,7 @@ int main()
                 return 0;
             }
         }
-         menuSeleccion(opcion);
+         return 0;
     }
 
 else
