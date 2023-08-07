@@ -113,6 +113,7 @@ int main()
                 double montoRetiro;
                 cout << "Ingrese el monto a retirar: $";
                 cin >> montoRetiro;
+                cout << endl;
                 retirarDinero(usuario, montoRetiro);
                 break;
             case 5:
@@ -279,6 +280,7 @@ void cambiarPin(Usuario &usuario, string &pinCambiado)
 
 void retirarDinero(Usuario &usuario, double monto)
 {
+  if(monto <= 15000){
     if (monto <= usuario.saldoActual) // Verificamos que el monto a retirar por el usuario sea menor o igual a su saldo
     {
         usuario.saldoActual -= monto;
@@ -290,6 +292,9 @@ void retirarDinero(Usuario &usuario, double monto)
     {
         cout << "Saldo insuficiente" << endl;
     }
+  } else {
+       cout << "El monto maximo de retiro es de $15000" << endl << endl;
+  }
 }
 
 void transferirDinero(Usuario &usuario, double monto)
@@ -309,11 +314,16 @@ void transferirDinero(Usuario &usuario, double monto)
         {
             cout << "Ingrese el monto a transferir: $"; 
             cin >> monto;
+
+            if(monto <= 125000){ // Monto de transferencia maximo en los cajeros de bancos Argentinos
+
             cout << endl;
             cout << "¿Esta seguro que desea transferir la cantidad de $" << monto << " a " << usuarioDestino.nombreUsuario << "?" << endl << endl; // Ante una transferencia en un cajero normalmente deberia haber un aviso previo a transferir
             cout << "Ingrese 1 para CONFIRMAR o 2 para CANCELAR" << endl;
             cin >> confirmacion;
             cout << endl;
+
+          
 
             if(confirmacion == 1){
 
@@ -331,14 +341,18 @@ void transferirDinero(Usuario &usuario, double monto)
             }
             } else if(confirmacion == 2){
                 finalizado = true;
+            } else {
+                cout << "Error en la seleccion de opcion" << endl << endl;
             }
-
+          } else {
+            cout << "El maximo de transferencia diario permitido es de $125000" << endl << endl;
+        }
         }
         else
-        {
+         {
             cout << "Error, Usuario inexistente o bloqueado." << endl;
             finalizado = true;
-        }
+         }
       }  
 }
 
