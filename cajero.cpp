@@ -178,7 +178,7 @@ Usuario identificarUsuario(const string &numCuenta)   // Funcion para identifica
     if (archivo.is_open()) // Si el archivo abre correctamente
     {
         string cuenta, pin, saldoActual, tarjetaBloqueada, nombreUsuario;  // Utilizamos cuenta en vez de numCuenta en el string para mostrar que es indiferente, lo que nos importa es el orden establecido por las comas.
-        while (getline(archivo, cuenta, ',') && // Los getline son cruciales para que podamos extraer y leer correctamente los datos, si vemos en los argumentos de la funcion, el primer pertenece a la variable "archivo" en este caso al usuarios.csv, el segundo argumento es "cuenta", leera el primer dato de usuarios en este caso "numCuenta" y el tercer argumento tenemos una "," esto es para delimitar la lectura del getline y lo que explica porque los datos en los archivos .CSV se ordenan mediante comas. 
+        while (getline(archivo, cuenta, ',') && // Los getline son cruciales para que podamos extraer y leer correctamente los datos, si vemos en los parametros de la funcion, el primero pertenece a la variable "archivo" en este caso al usuarios.csv, el segundo parametro es "cuenta", leera el primer dato de usuarios en este caso "numCuenta" y el tercer parametro tenemos una "," esto es para delimitar la lectura del getline y lo que explica porque los datos en los archivos .CSV se ordenan mediante comas. 
                getline(archivo, pin, ',') &&
                getline(archivo, saldoActual, ',') &&
                getline(archivo, tarjetaBloqueada, ',') &&
