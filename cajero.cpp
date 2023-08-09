@@ -253,7 +253,7 @@ bool verificarPIN(Usuario &usuario, const string &PIN) // Simple verificacion de
 
 void consultarSaldoActual(const Usuario &usuario) //Simple funcion de saldo 
 {
-    cout << "Saldo actual: $" << fixed << setprecision(2) << usuario.saldoActual << endl; // Teniamos un error con el usuario de "Jorge" su numero era demaisado grande y por consola lo expresaba como "Saldo actual: $1.75346e+06" por ende investigando vimos que la libreria "iomanip"  tiene dos funciones especificas para solucionar esto y que por consola devuelva el numero decimal bien expresado, fixed y setprecision(), set precision segun el decimal que incluyas dentro de los parentesis es los 0 despues de las comas. 
+    cout << "Saldo actual: $" << fixed << setprecision(2) << usuario.saldoActual << endl; // Teniamos un error con el usuario de "Jorge" su numero era demasiado grande y por consola lo expresaba como "Saldo actual: $1.75346e+06" por ende investigando vimos que la libreria "iomanip"  tiene dos funciones especificas para solucionar esto y que por consola devuelva el numero decimal bien expresado, fixed y setprecision(), set precision segun el decimal que incluyas dentro de los parentesis es los 0 despues de las comas. 
 }
 
 void depositarDinero(Usuario &usuario, double monto)
