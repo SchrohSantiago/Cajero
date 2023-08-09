@@ -266,17 +266,23 @@ void depositarDinero(Usuario &usuario, double monto)
 
 void cambiarPin(Usuario &usuario, string &pinCambiado)
 {
-    if (pinCambiado.length() == 4) // Como es un string utilizamos ".length" para medir el largo, entonces si el largo del pin ingresado es igual a 4 ingresa en el if
+    while (true) // Bucle infinito hasta que se ingrese un PIN válido
     {
-        usuario.PIN = pinCambiado;
-        cout << "Su pin ha sido cambiado exitosamente" << endl;
-        guardarUsuario(usuario);
-    }
-    else
-    {
-        cout << "Su pin debe tener unicamente 4 digitos" << endl;
+        if (pinCambiado.length() == 4)
+        {
+            usuario.PIN = pinCambiado;
+            cout << "Su PIN ha sido cambiado exitosamente." << endl;
+            guardarUsuario(usuario);
+            break; // Salir del bucle cuando el PIN se cambie correctamente
+        }
+        else
+        {
+            cout << "Su PIN debe tener exactamente 4 dígitos. Intente nuevamente: ";
+            cin >> pinCambiado; // Solicitar un nuevo PIN
+        }
     }
 }
+
 
 void retirarDinero(Usuario &usuario, double monto)
 {
